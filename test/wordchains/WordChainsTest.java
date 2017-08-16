@@ -68,7 +68,7 @@ public class WordChainsTest {
             isOk = false;
         }
         for (int i = 0; i < testedChain.size() - 1; i++) {
-            if (WordUtil.charDifference(testedChain.get(i), testedChain.get(i + 1)) != 1) {
+            if (!WordUtil.areWordsDirectlyConnected(testedChain.get(i), testedChain.get(i + 1))) {
                 isOk = false;
             }
         }
@@ -77,22 +77,22 @@ public class WordChainsTest {
 
     @Test(timeout = 1000)
     public void testCatDogPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
-        wcReal.getChainBetween("cat", "dog").size();
+        wcReal.getChainBetween("cat", "dog");
     }
 
     @Test(timeout = 1000)
     public void testDogCatPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
-        wcReal.getChainBetween("dog", "cat").size();
+        wcReal.getChainBetween("dog", "cat");
     }
 
     @Test(timeout = 1000)
     public void testLeadGoldPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
-        wcReal.getChainBetween("lead", "gold").size();
+        wcReal.getChainBetween("lead", "gold");
     }
 
     @Test(timeout = 1000)
     public void testRubyCodePerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
-        wcReal.getChainBetween("ruby", "code").size();
+        wcReal.getChainBetween("ruby", "code");
     }
 
 }

@@ -23,16 +23,16 @@ public class WordUtilTest {
      */
     @Test
     public void testCharDifference() throws DifferentWordLengthsException {
-        assertEquals(0, WordUtil.charDifference("aaa", "aaa"));
-        assertEquals(1, WordUtil.charDifference("aba", "aaa"));
-        assertEquals(3, WordUtil.charDifference("cvr", "aaa"));
-        assertEquals(3, WordUtil.charDifference("fer", "sdf"));
+        assertEquals(0, WordUtil.areWordsDirectlyConnected("aaa", "aaa"));
+        assertEquals(1, WordUtil.areWordsDirectlyConnected("aba", "aaa"));
+        assertEquals(3, WordUtil.areWordsDirectlyConnected("cvr", "aaa"));
+        assertEquals(3, WordUtil.areWordsDirectlyConnected("fer", "sdf"));
     }
 
     @Test
     public void differentLengthWordsShouldThrowException() throws DifferentWordLengthsException {
         thrown.expect(DifferentWordLengthsException.class);
-        WordUtil.charDifference("a", "aa");
+        WordUtil.areWordsDirectlyConnected("a", "aa");
     }
     
     

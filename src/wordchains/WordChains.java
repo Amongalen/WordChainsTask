@@ -3,6 +3,7 @@ package wordchains;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -16,7 +17,8 @@ import wordchains.exceptions.WordNotInDictionaryException;
  */
 public class WordChains {
 
-    final static String TEST_FILENAME = "wordList.txt";
+    final static String TEST_FILENAME = "wordListTest.txt";
+    final static String REAL_FILENAME = "wordList.txt";
     private ArrayList<String> dictionaryWords;
     HashMap<String, ArrayList<String>> directConnections;
 
@@ -24,7 +26,7 @@ public class WordChains {
      * @param args the command line arguments
      */
     public static void main(String[] args) {
-        WordChains wc = new WordChains(TEST_FILENAME);
+        WordChains wc = new WordChains(REAL_FILENAME);
         try {
             System.out.println(wc.getChainBetween("cat", "dog"));
             System.out.println(wc.getChainBetween("dog", "cat"));
@@ -55,7 +57,7 @@ public class WordChains {
             throw new WordNotInDictionaryException();
         }
 
-        if (WordUtil.charDifference(start, end) <= 1) {
+        if (WordUtil.areWordsDirectlyConnected(start, end)) {
             results.add(start);
             results.add(end);
             return results;
@@ -75,27 +77,43 @@ public class WordChains {
         shortestChainsFromStart.put(2, getDirectConnectionsFromStart(start, wordsToConnect));
         int count = 3;
         do {
-            ArrayList<String> connectedWords = new ArrayList<>();
             ArrayList<Chain> longestChainsFromStart = shortestChainsFromStart.get(count - 1);
+
+            Chain possibleResult = checkIfChainsCanConnectToEnd(longestChainsFromStart, end);
+            if (possibleResult != null) {
+                return possibleResult.getWords();
+            }
+
             ArrayList<Chain> newChains = new ArrayList<>();
-            for (String wordToConnect : wordsToConnect) {
+            for (Iterator<String> it = wordsToConnect.iterator(); it.hasNext();) {
+                String wordToConnect = it.next();
+                if (wordToConnect.equals(end)) {
+                    continue;
+                }
                 for (Chain chain : longestChainsFromStart) {
                     if (areConnected(chain, wordToConnect)) {
                         Chain newChain = new Chain(chain);
                         newChain.addWord(wordToConnect);
-                        if (wordToConnect.equals(end)) {
-                            return newChain.getWords();
-                        }
                         newChains.add(newChain);
-                        connectedWords.add(wordToConnect);
+                        it.remove();
                         break;
                     }
                 }
             }
-            wordsToConnect.removeAll(connectedWords);
             shortestChainsFromStart.put(count, newChains);
             count++;
         } while (!wordsToConnect.isEmpty());
+        return null;
+    }
+
+    private Chain checkIfChainsCanConnectToEnd(ArrayList<Chain> longestChainsFromStart, String end) {
+        for (Chain chain : longestChainsFromStart) {
+            if (areConnected(chain, end)) {
+                Chain newChain = new Chain(chain);
+                newChain.addWord(end);
+                return newChain;
+            }
+        }
         return null;
     }
 
@@ -134,18 +152,25 @@ public class WordChains {
         HashMap<String, ArrayList<String>> result = new HashMap<>();
         for (int i = 0; i < dictionary.size(); i++) {
             String word1 = dictionary.get(i);
-            ArrayList<String> connections = new ArrayList<>();
-            for (int j = 0; j < dictionary.size() - 1; j++) {
+            for (int j = i; j < dictionary.size(); j++) {
                 String word2 = dictionary.get(j);
                 try {
-                    if (i != j && WordUtil.charDifference(word1, word2) == 1) {
-                        connections.add(word2);
+                    if (i != j && WordUtil.areWordsDirectlyConnected(word1, word2)) {
+                        if (result.get(word1) == null) {
+                            result.put(word1,new ArrayList<>());
+                        }
+                        result.get(word1).add(word2);
+                        
+                        ArrayList<String> listForWord2 = result.get(word2);
+                        if (result.get(word2) == null) {
+                            result.put(word2,new ArrayList<>());
+                        }
+                         result.get(word2).add(word1);
                     }
                 } catch (DifferentWordLengthsException ex) {
                     Logger.getLogger(WordChains.class.getName()).log(Level.SEVERE, null, ex);
                 }
             }
-            result.put(word1, connections);
         }
 
         directConnections = result;
