@@ -15,3 +15,5 @@ rods
 rubs
 ruby
 rat
+pies
+bies

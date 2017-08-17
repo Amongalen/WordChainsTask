@@ -11,6 +11,7 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 import org.junit.Rule;
 import org.junit.rules.ExpectedException;
+import wordchains.exceptions.ConnectionNotFoundException;
 import wordchains.exceptions.WordNotInDictionaryException;
 
 /**
@@ -37,13 +38,13 @@ public class WordChainsTest {
     public ExpectedException thrown = ExpectedException.none();
 
     @Test
-    public void differentLengthWordsShouldThrowException() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void differentLengthWordsShouldThrowException() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         thrown.expect(DifferentWordLengthsException.class);
         wc.getChainBetween("cat", "gold");
     }
 
     @Test
-    public void wordNotInDictionaryShouldThrowException() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void wordNotInDictionaryShouldThrowException() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         thrown.expect(WordNotInDictionaryException.class);
         wc.getChainBetween("neck", "gold");
     }
@@ -57,11 +58,12 @@ public class WordChainsTest {
             assertEquals(6, wc.getChainBetween("ruby", "code").size());
         } catch (DifferentWordLengthsException ex) {
         } catch (WordNotInDictionaryException ex) {
+        } catch (ConnectionNotFoundException ex) {
         }
     }
 
     @Test
-    public void succesiveWordsShouldDifferByOneLetter() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void succesiveWordsShouldDifferByOneLetter() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         boolean isOk = true;
         ArrayList<String> testedChain = wc.getChainBetween("cat", "dog");
         if (testedChain.size() == 0) {
@@ -76,23 +78,29 @@ public class WordChainsTest {
     }
 
     @Test(timeout = 1000)
-    public void testCatDogPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void testCatDogPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         wcReal.getChainBetween("cat", "dog");
     }
 
     @Test(timeout = 1000)
-    public void testDogCatPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void testDogCatPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         wcReal.getChainBetween("dog", "cat");
     }
 
     @Test(timeout = 1000)
-    public void testLeadGoldPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void testLeadGoldPerformance() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         wcReal.getChainBetween("lead", "gold");
     }
 
     @Test(timeout = 1000)
-    public void testRubyCodePerformance() throws DifferentWordLengthsException, WordNotInDictionaryException {
+    public void testRubyCodePerformance() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
         wcReal.getChainBetween("ruby", "code");
+    }
+    
+    @Test
+    public void notConnectedWordsShouldThrowException() throws DifferentWordLengthsException, WordNotInDictionaryException, ConnectionNotFoundException {
+        thrown.expect(ConnectionNotFoundException.class);
+        wc.getChainBetween("gold", "pies");
     }
 
 }

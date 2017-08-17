@@ -18,15 +18,13 @@ public class WordUtilTest {
     @Rule
     public ExpectedException thrown = ExpectedException.none();
 
-    /**
-     * Test of charDifference method, of class WordUtil.
-     */
+
     @Test
-    public void testCharDifference() throws DifferentWordLengthsException {
-        assertEquals(0, WordUtil.areWordsDirectlyConnected("aaa", "aaa"));
-        assertEquals(1, WordUtil.areWordsDirectlyConnected("aba", "aaa"));
-        assertEquals(3, WordUtil.areWordsDirectlyConnected("cvr", "aaa"));
-        assertEquals(3, WordUtil.areWordsDirectlyConnected("fer", "sdf"));
+    public void testAreWordsDirectlyConnected() throws DifferentWordLengthsException {
+        assertEquals(false, WordUtil.areWordsDirectlyConnected("aaa", "aaa"));
+        assertEquals(true, WordUtil.areWordsDirectlyConnected("aba", "aaa"));
+        assertEquals(false, WordUtil.areWordsDirectlyConnected("cvr", "aaa"));
+        assertEquals(false, WordUtil.areWordsDirectlyConnected("fer", "sdf"));
     }
 
     @Test

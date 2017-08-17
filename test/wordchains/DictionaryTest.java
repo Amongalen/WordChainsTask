@@ -24,14 +24,12 @@ public class DictionaryTest {
 
     @Rule
     public ExpectedException thrown = ExpectedException.none();
-    /**
-     * Test of readDictionary method, of class Dictionary.
-     */
+
     @Test
-    public void testDictionaryShouldHave17Elements() {
+    public void testDictionaryShouldHave19Elements() {
         try {
             Dictionary instance = new Dictionary(TEST_FILENAME);
-            assertEquals(17, instance.getWords().size());
+            assertEquals(19, instance.getWords().size());
         } catch (IOException ex) {
             Logger.getLogger(DictionaryTest.class.getName()).log(Level.SEVERE, null, ex);
         }
